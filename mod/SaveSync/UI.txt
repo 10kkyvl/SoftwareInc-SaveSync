@@ -1,0 +1,14 @@
+<Window id="window" MinSize="0,0" NonLocTitle="Save Sync">
+    <ScrollView anchor="fill" position="4,4" size="-8,-8">
+        <VerticalLayout anchor="top" padding="4,4,4,4" spacing="2" childForceExpandHeight="False" childControlHeight="False">
+            <ContentFitter verticalFit="PreferredSize">
+                <Label id="body" height="24">
+                    <ContentFitter verticalFit="PreferredSize"></ContentFitter>
+                </Label>
+                <Button id="apply" onClick="OnChoice(apply)" height="24">Add to a new save</Button>
+                <Button id="skip" onClick="OnChoice(skip)" height="24">Skip this mod</Button>
+                <Button id="later" onClick="OnChoice(later)" height="24">Decide later</Button>
+            </ContentFitter>
+        </VerticalLayout>
+    </ScrollView>
+</Window>

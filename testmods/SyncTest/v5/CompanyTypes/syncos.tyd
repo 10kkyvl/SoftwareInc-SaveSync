@@ -1,0 +1,15 @@
+CompanyType
+	{
+	Specialization		"Sync OS Company"
+	PerYear				0
+	Min					1
+	Max					1
+	Types
+		[
+			{
+			Software	"Operating System"
+			Category	"Sync OS"
+			Chance		1
+			}
+		]
+	}

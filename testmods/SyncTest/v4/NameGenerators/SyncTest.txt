@@ -1,0 +1,10 @@
+-start(base)
+-base(ext,stop)
+Sync
+Test
+Mirror
+Merge
+-ext(stop)
+ App
+ Tool
+ Suite

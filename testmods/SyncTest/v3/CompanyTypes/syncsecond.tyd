@@ -1,0 +1,14 @@
+CompanyType
+	{
+	Specialization		"Sync Second Company"
+	PerYear				0
+	Min					1
+	Max					1
+	Types
+		[
+			{
+			Software	"Sync Second App"
+			Chance		1
+			}
+		]
+	}

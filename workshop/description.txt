@@ -1,0 +1,65 @@
+[h1]Save Sync[/h1]
+[b]Got a data mod update, or found a new mod, but you are 30 years into your company? Save Sync brings the new content into the save you already have.[/b]
+
+[list]
+[*]Your original save is never changed. The result goes to a new save file.
+[*]You see every change before anything happens.
+[*]When two of your mods disagree, you decide.
+[/list]
+
+[hr][/hr]
+
+[h2]How it works[/h2]
+[olist]
+[*]Load your save. If a mod in it has something new, a window lists what will be [b]added[/b], what will be [b]updated[/b] and what [b]cannot be applied[/b].
+[*]For each mod choose [b]Add to a new save[/b], [b]Skip this mod[/b] or [b]Decide later[/b]. Skipped mods stop asking.
+[*]If two mods change the same software type, pick whose numbers to use, or keep the ones in your save. One switch applies your choice to all remaining types.
+[*]Save Sync writes a new save, loads it and adds the content. [b]Save the game afterwards[/b] to keep it.
+[/olist]
+A mod your save has never used does not pop up on its own. Add it from [i]Options > Mods > Save Sync > Check all installed mods[/i].
+
+[hr][/hr]
+
+[h2]What it adds[/h2]
+[list]
+[*]New software types, categories and features
+[*]Add-ons for existing software types
+[*]New company types, and new software for existing company types
+[*]The name generators all of this needs
+[*]Updated popularity, unlock years, hidden flag and submarkets
+[*]Renamed submarkets
+[/list]
+
+[h2]What it does not do[/h2]
+[list]
+[*][b]It only adds.[/b] Content a mod removed or renamed stays in your save.
+[*]Products already released and projects already started keep their old features.
+[*]DevTime, server load, ideal price, retention and similar numbers of existing content cannot change from a workshop mod. The window lists them as "will not change".
+[*][b]Hardware[/b], manufacturing and new tech specializations are not supported yet.
+[*]If a mod adds a main feature whose specialization your type already uses under another name, that main feature is skipped and its sub features go under the existing one.
+[*]New categories keep the default submarket split.
+[*]Does nothing in multiplayer, in saves from multiplayer, or in the editor.
+[/list]
+
+[hr][/hr]
+
+[h2]Questions[/h2]
+[b]Is it safe?[/b]
+Your original save file is not touched, so you can always go back to it. Still, keep a copy of your saves, as with any mod that changes a save.
+
+[b]When do AI companies start making the new software?[/b]
+Over time, as in a new game. New companies can take from a few game months to a couple of years to appear.
+
+[b]Can I remove Save Sync later?[/b]
+Yes. Saves keep working without it, and the content it added stays in the saves you saved after adding it.
+
+[b]A window keeps asking about a mod I do not want.[/b]
+Press [b]Skip this mod[/b]. [b]Decide later[/b] asks again on the next load.
+
+[hr][/hr]
+
+[h2]Русский[/h2]
+Save Sync добавляет в идущий сейв новое содержимое обновлённого или нового дата-мода: типы ПО, категории, фичи, аддоны и типы компаний. Исходный сейв не меняется, результат пишется в новый файл. Перед применением мод показывает все изменения, а при конфликте двух модов ты выбираешь, чьи числа брать. Мод только добавляет: удалённое в моде остаётся в сейве, выпущенные продукты не меняются, железо и новые специализации пока не поддерживаются. Сделай копию сейвов перед использованием.
+
+[hr][/hr]
+Free. All code is written from scratch for the game's public mod API.

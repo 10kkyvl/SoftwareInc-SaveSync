@@ -1,0 +1,14 @@
+CompanyType
+	{
+	Specialization		"Sync Test Company"
+	PerYear				0
+	Min					1
+	Max					1
+	Types
+		[
+			{
+			Software	"Sync Test App"
+			Chance		1
+			}
+		]
+	}

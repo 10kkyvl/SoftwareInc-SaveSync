@@ -1,0 +1,85 @@
+SoftwareType
+	{
+	Name			"Sync Test App"
+	Description		"Test software for Save Sync"
+	Random			0.2
+	Popularity		0.6
+	Retention		36
+	IdealPrice		30
+	OptimalDevTime	25
+	SubmarketNames	[ Usability; Security; Productivity ]
+	Iterative		1
+	NameGenerator	SyncTest
+	OSSupport		[ Computer ]
+	InHouse			False
+	Features
+		[
+			{
+			Name		System
+			Spec		System
+			DevTime		3
+			CodeArt		1
+			Submarkets	[ 1; 1; 1 ]
+			Features
+				[
+					{
+					Name		"Sync Feature One"
+					Description	"Exists in version one"
+					DevTime		2
+					Level		1
+					CodeArt		1
+					Submarkets	[ 1; 0; 1 ]
+					}
+					{
+					Name		"Sync Feature Two"
+					Description	"Added by version two"
+					DevTime		2
+					Level		1
+					CodeArt		1
+					Submarkets	[ 0; 1; 1 ]
+					}
+					{
+					Name		"Sync Dep Feature"
+					Description	"Depends on other software"
+					DevTime		2
+					Level		2
+					CodeArt		1
+					Dependencies "Audio Tool"
+					Submarkets	[ 1; 1; 0 ]
+					}
+				]
+			}
+		]
+	AddOns
+		[
+			{
+			Name			"Sync Pack"
+			Description		"Add-on added to an existing type"
+			NameGenerator	SyncTest
+			IdealPrice		10
+			OptimalDevTime	6
+			Retention		12
+			Features
+				[
+					{
+					Name		"Sync Pack Content"
+					Spec		System
+					DevTime		1
+					Level		1
+					CodeArt		1
+					MaxFactor	2
+					Submarkets	[ 1; 1; 0 ]
+					DependsOn	"Sync Feature One"
+					}
+					{
+					Name		"Sync Pack Extras"
+					Spec		System
+					DevTime		1
+					Level		1
+					CodeArt		1
+					Submarkets	[ 1; 1; 1 ]
+					}
+				]
+			}
+		]
+	}

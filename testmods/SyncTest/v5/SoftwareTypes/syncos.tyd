@@ -1,0 +1,18 @@
+SoftwareType
+	{
+	Name			"Operating System"
+	Override		True
+	Categories
+		[
+			{
+			Name		"Sync OS"
+			Description	"Test category added by version five"
+			Popularity	0.7
+			Retention	48
+			TimeScale	1
+			Iterative	1
+			IdealPrice	100
+			Submarkets	[ 1; 1; 1 ]
+			}
+		]
+	}
