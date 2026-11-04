@@ -28,12 +28,9 @@ namespace SaveSync
             return types;
         }
 
-        // A save keeps no list of its mods. A mod counts as used when most of what it adds on top of the base game is in the save.
-        // One match is not enough: different mods often share names like a company type or a feature.
-        public static bool IsInSave(ModPackage package, MarketSimulation simulation, Dictionary<string, SoftwareType> baseSoftware, Dictionary<string, CompanyType> baseCompanies, out int present, out int total)
+        // Fills added with every part the mod adds on top of the base game, and present with those of them found in the save.
+        public static void AddedParts(ModPackage package, MarketSimulation simulation, Dictionary<string, SoftwareType> baseSoftware, Dictionary<string, CompanyType> baseCompanies, Dictionary<string, bool> added, Dictionary<string, bool> present)
         {
-            present = 0;
-            total = 0;
             foreach (SoftwareType type in GameData.AllSoftwareTypes(new ModPackage[] { package }))
             {
                 if (!package.SoftwareTypes.ContainsKey(type.Name) && !package.SoftwareTypeOverrides.ContainsKey(type.Name))
@@ -48,43 +45,27 @@ namespace SaveSync
 
                 if (original == null)
                 {
-                    total++;
-                    if (current != null)
-                    {
-                        present++;
-                    }
+                    NotePart("software|" + type.Name, current != null, added, present);
                 }
                 foreach (string name in type.Categories.Keys)
                 {
                     if (original == null || !original.Categories.ContainsKey(name))
                     {
-                        total++;
-                        if (current != null && current.Categories.ContainsKey(name))
-                        {
-                            present++;
-                        }
+                        NotePart(type.Name + "|category|" + name, current != null && current.Categories.ContainsKey(name), added, present);
                     }
                 }
                 foreach (string name in type.Features.Keys)
                 {
                     if (original == null || !original.Features.ContainsKey(name))
                     {
-                        total++;
-                        if (current != null && current.Features.ContainsKey(name))
-                        {
-                            present++;
-                        }
+                        NotePart(type.Name + "|feature|" + name, current != null && current.Features.ContainsKey(name), added, present);
                     }
                 }
                 foreach (string name in type.AddOns.Keys)
                 {
                     if (original == null || !original.AddOns.ContainsKey(name))
                     {
-                        total++;
-                        if (current != null && current.AddOns.ContainsKey(name))
-                        {
-                            present++;
-                        }
+                        NotePart(type.Name + "|addon|" + name, current != null && current.AddOns.ContainsKey(name), added, present);
                     }
                 }
             }
@@ -93,34 +74,99 @@ namespace SaveSync
             {
                 if (!baseCompanies.ContainsKey(name))
                 {
-                    total++;
-                    if (simulation.CompanyTypes.ContainsKey(name))
-                    {
-                        present++;
-                    }
+                    NotePart("company|" + name, simulation.CompanyTypes.ContainsKey(name), added, present);
                 }
             }
-            return total > 0 && (double)present / total >= MinimumShare;
         }
 
+        private static void NotePart(string key, bool inSave, Dictionary<string, bool> added, Dictionary<string, bool> present)
+        {
+            added[key] = true;
+            if (inSave)
+            {
+                present[key] = true;
+            }
+        }
+
+        // A save keeps no list of its mods. A mod counts as used when most of what it adds on top of the base game is in the save.
+        // One match is not enough: different mods often share names like a company type or a feature.
+        // A mod that continues another one repeats most of its names, so the older mod looks used in a save made only with the newer one.
+        // A mod is not used when everything it has in the save is also added by the other used mods. Mods that add less are checked first:
+        // the continuation adds more, so it stays, and of two mods with the same content one stays.
         public static List<ModPackage> UsedPackages(MarketSimulation simulation)
         {
             Dictionary<string, SoftwareType> baseSoftware = BaseSoftware();
             Dictionary<string, CompanyType> baseCompanies = BaseCompanies();
-            List<ModPackage> used = new List<ModPackage>();
+            List<ModPackage> candidates = new List<ModPackage>();
+            List<Dictionary<string, bool>> addedParts = new List<Dictionary<string, bool>>();
+            List<Dictionary<string, bool>> presentParts = new List<Dictionary<string, bool>>();
             for (int i = 0; i < GameData.ModPackages.Count; i++)
             {
-                int present;
-                int total;
                 ModPackage package = GameData.ModPackages[i];
-                bool inSave = IsInSave(package, simulation, baseSoftware, baseCompanies, out present, out total);
-                UnityEngine.Debug.Log("Save Sync: " + package.ItemTitle + " in save " + present + "/" + total + " used " + inSave);
+                Dictionary<string, bool> added = new Dictionary<string, bool>();
+                Dictionary<string, bool> present = new Dictionary<string, bool>();
+                AddedParts(package, simulation, baseSoftware, baseCompanies, added, present);
+                bool inSave = added.Count > 0 && (double)present.Count / added.Count >= MinimumShare;
+                UnityEngine.Debug.Log("Save Sync: " + package.ItemTitle + " in save " + present.Count + "/" + added.Count + " used " + inSave);
                 if (inSave)
                 {
-                    used.Add(package);
+                    candidates.Add(package);
+                    addedParts.Add(added);
+                    presentParts.Add(present);
+                }
+            }
+
+            List<int> order = new List<int>();
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                int at = 0;
+                while (at < order.Count && addedParts[order[at]].Count <= addedParts[i].Count)
+                {
+                    at++;
+                }
+                order.Insert(at, i);
+            }
+
+            bool[] dropped = new bool[candidates.Count];
+            for (int k = 0; k < order.Count; k++)
+            {
+                int i = order[k];
+                if (CoveredByOthers(i, presentParts[i], addedParts, dropped))
+                {
+                    dropped[i] = true;
+                    UnityEngine.Debug.Log("Save Sync: " + candidates[i].ItemTitle + " not used: everything it has in the save is also added by other used mods");
+                }
+            }
+
+            List<ModPackage> used = new List<ModPackage>();
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                if (!dropped[i])
+                {
+                    used.Add(candidates[i]);
                 }
             }
             return used;
+        }
+
+        private static bool CoveredByOthers(int self, Dictionary<string, bool> parts, List<Dictionary<string, bool>> addedParts, bool[] dropped)
+        {
+            foreach (string key in parts.Keys)
+            {
+                bool found = false;
+                for (int j = 0; j < addedParts.Count && !found; j++)
+                {
+                    if (j != self && !dropped[j] && addedParts[j].ContainsKey(key))
+                    {
+                        found = true;
+                    }
+                }
+                if (!found)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         // Types, features and categories defined by two used mods. Their values in the save are the result of a load order the save does not record.
